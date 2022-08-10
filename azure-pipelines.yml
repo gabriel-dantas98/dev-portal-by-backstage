@@ -11,29 +11,23 @@ resources:
 variables:
   tag: '$(Build.BuildId)'
 
-stages:
-- stage: Build
-  displayName: Build image
-  jobs:
-  - job: Build
-    displayName: Build
-    pool:
-      vmImage: ubuntu-latest
-    steps:
-    - task: NodeTool@0  
-      inputs:
-        versionSpec: '16.x'
-      displayName: 'Install Node.js'
+pool:
+  vmImage: ubuntu-latest
+steps:
+  - task: NodeTool@0  
+    inputs:
+      versionSpec: '16.x'
+    displayName: 'Install Node.js'
 
-    - script: |
-        yarn install
-        yarn build
-      displayName: 'npm install and build'
+  - script: |
+      yarn install
+      yarn build
+    displayName: 'npm install and build'
 
-    - task: Docker@2
-      displayName: Build an image
-      inputs:
-        command: build
-        dockerfile: '$(Build.SourcesDirectory)/packages/backend/Dockerfile'
-        tags: |
-          $(tag)
+  - task: Docker@2
+    displayName: Build an image
+    inputs:
+      command: build
+      dockerfile: '$(Build.SourcesDirectory)/packages/backend/Dockerfile'
+      tags: |
+        $(tag)
